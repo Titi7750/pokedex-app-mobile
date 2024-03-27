@@ -2,6 +2,7 @@ import { faUserCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { StrictMode } from "react";
 import { TouchableOpacity } from "react-native";
 import Home from "./components/home";
 import Profile from "./components/profile";
@@ -34,8 +35,10 @@ const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <MyStack />
-    </NavigationContainer>
+    <StrictMode>
+      <NavigationContainer>
+        <MyStack />
+      </NavigationContainer>
+    </StrictMode>
   );
 }
