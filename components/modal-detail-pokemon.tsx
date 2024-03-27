@@ -37,7 +37,11 @@ export default function DetailsPokemon({ id }: { id: string }) {
 
   useEffect(() => {
     const fetchPokemonEvolutions = async () => {
-      if (pokemon && pokemon.apiEvolutions && pokemon.apiEvolutions) {
+      if (
+        pokemon &&
+        Array.isArray(pokemon.apiEvolutions) &&
+        pokemon.apiEvolutions.length > 0
+      ) {
         const evolutionData = await useGetOnePokemonEvolutions(
           pokemon.apiEvolutions[0].pokedexId
         );
@@ -137,29 +141,6 @@ export default function DetailsPokemon({ id }: { id: string }) {
 }
 
 const styles = StyleSheet.create({
-  // centeredView: {
-  //   flex: 1,
-  //   justifyContent: "center",
-  //   alignItems: "center",
-  //   marginTop: 50,
-  // },
-
-  // modalView: {
-  //   margin: 20,
-  //   backgroundColor: "white",
-  //   borderRadius: 20,
-  //   padding: 60,
-  //   alignItems: "center",
-  //   shadowColor: "#000",
-  //   shadowOffset: {
-  //     width: 0,
-  //     height: 2,
-  //   },
-  //   shadowOpacity: 0.25,
-  //   shadowRadius: 4,
-  //   elevation: 5,
-  // },
-
   globalStats: {
     alignItems: "center",
     marginTop: 20,
@@ -179,27 +160,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-around",
     marginTop: 20,
-  },
-
-  button: {
-    borderRadius: 20,
-    padding: 10,
-    elevation: 2,
-  },
-
-  buttonClose: {
-    backgroundColor: "#2196F3",
-  },
-
-  textStyle: {
-    color: "white",
-    fontWeight: "bold",
-    textAlign: "center",
-  },
-
-  modalText: {
-    marginBottom: 15,
-    textAlign: "center",
   },
 
   title: {

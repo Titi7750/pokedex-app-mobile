@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import {
+  ActivityIndicator,
+  FlatList,
   Image,
   Modal,
   Pressable,
-  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -28,28 +29,47 @@ export default function Home() {
     fetchPokemon();
   }, []);
 
-  return (
-    <ScrollView>
+  const fetchMoreData = async () => {
+    const response = await fetch(
+      `https://pokebuildapi.fr/api/v1/pokemon/limit/${pokemon.length + 10}`
+    );
+    const data = await response.json();
+    setPokemon(data);
+  };
+
+  const renderPokemon = ({ item }: { item: any }) => {
+    return (
       <View style={styles.container}>
-        {pokemon.map((pokemon) => (
-          <TouchableOpacity
-            key={pokemon.id}
-            onPress={() => {
-              setModalVisible(true);
-              setSelectedPokemonId(pokemon.id.toString());
-            }}
-          >
-            <View style={styles.card}>
-              <Image
-                source={{ uri: pokemon.image }}
-                style={{ width: 120, height: 120 }}
-              />
-              <Text>{pokemon.name}</Text>
-              <Image />
-            </View>
-          </TouchableOpacity>
-        ))}
+        <TouchableOpacity
+          key={item.id}
+          onPress={() => {
+            setModalVisible(true);
+            setSelectedPokemonId(item.id.toString());
+          }}
+        >
+          <View style={styles.card}>
+            <Image
+              source={{ uri: item.image }}
+              style={{ width: 120, height: 120 }}
+            />
+            <Text>{item.name}</Text>
+            <Image />
+          </View>
+        </TouchableOpacity>
       </View>
+    );
+  };
+
+  const renderLoader = () => {
+    return (
+      <View style={styles.loader}>
+        <ActivityIndicator size="large" color="orange" />
+      </View>
+    );
+  };
+
+  const ModalDetailPokemon = () => {
+    return (
       <View>
         {selectedPokemonId && (
           <Modal
@@ -74,7 +94,22 @@ export default function Home() {
           </Modal>
         )}
       </View>
-    </ScrollView>
+    );
+  };
+
+  return (
+    <View style={{ flex: 1 }}>
+      <FlatList
+        data={pokemon}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={renderPokemon}
+        numColumns={2}
+        onEndReached={fetchMoreData}
+        onEndReachedThreshold={0.5}
+        ListFooterComponent={renderLoader}
+      />
+      <ModalDetailPokemon />
+    </View>
   );
 }
 
@@ -139,20 +174,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#2196F3",
   },
 
-  title: {
-    fontSize: 30,
-    fontWeight: "bold",
-    textAlign: "center",
-  },
-
-  imgPokemon: {
-    width: 200,
-    height: 200,
-    marginTop: 20,
-  },
-
-  imgType: {
-    width: 50,
-    height: 50,
+  loader: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#fff",
   },
 });
