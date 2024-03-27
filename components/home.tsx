@@ -163,6 +163,13 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
 
+  namePokemon: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#fff",
+    marginTop: 10,
+  },
+
   button: {
     borderRadius: 20,
     padding: 10,
