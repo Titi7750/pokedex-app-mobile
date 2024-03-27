@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from "react-native";
 
-export default function Profile({ navigation }: { navigation: any }) {
+export default function Profile() {
   return (
     <View style={styles.container}>
       <Text>Ceci est une page profil</Text>
