@@ -1,4 +1,4 @@
-import { faMapLocation } from "@fortawesome/free-solid-svg-icons";
+import { faCat } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -11,22 +11,25 @@ function MyStack() {
   return (
     <Stack.Navigator>
       <Stack.Screen
-        name="Home"
-        component={Home}
+        name="MapsPokemon"
+        component={MapsPokemon}
         options={({ navigation }) => ({
-          title: "Bienvenue sur PokeBuild",
+          title: "Carte des Pokémons",
           headerRight: () => (
             <TouchableOpacity
-              onPress={() => navigation.navigate("MapsPokemon")}
+              onPress={() => navigation.navigate("Home")}
             >
-              <FontAwesomeIcon icon={faMapLocation} size={30} color={"orange"} />
+              <FontAwesomeIcon icon={faCat} size={30} color={"orange"} />
             </TouchableOpacity>
           ),
         })}
       />
       <Stack.Screen
-        name="MapsPokemon"
-        component={MapsPokemon}
+        name="Home"
+        component={Home}
+        options={{
+          title: "Liste de mes Pokémons",
+        }}
       />
     </Stack.Navigator>
   );
