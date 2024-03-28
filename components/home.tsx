@@ -50,9 +50,9 @@ export default function Home() {
           <View style={styles.card}>
             <Image
               source={{ uri: item.image }}
-              style={{ width: 120, height: 120 }}
+              style={styles.imgPokemon}
             />
-            <Text>{item.name}</Text>
+            <Text style={styles.namePokemon}>{item.name}</Text>
             <Image />
           </View>
         </TouchableOpacity>
@@ -155,6 +155,12 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
+  },
+
+  imgPokemon: {
+    width: 135,
+    height: 135,
+    marginTop: 20,
   },
 
   textStyle: {
