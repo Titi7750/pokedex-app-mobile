@@ -5,19 +5,19 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { StrictMode } from "react";
 import { TouchableOpacity } from "react-native";
 import Home from "./components/home";
-import MapsPokemon from "./components/maps";
+import CapturedPokemon from "./components/capturedPokemon";
 
 function MyStack() {
   return (
     <Stack.Navigator>
       <Stack.Screen
-        name="MapsPokemon"
-        component={MapsPokemon}
+        name="Page d'accueil"
+        component={Home}
         options={({ navigation }) => ({
-          title: "Carte des Pokémons",
+          title: "Page des Pokémons",
           headerRight: () => (
             <TouchableOpacity
-              onPress={() => navigation.navigate("Home")}
+              onPress={() => navigation.navigate("Liste des Pokémons capturés")}
             >
               <FontAwesomeIcon icon={faCat} size={30} color={"orange"} />
             </TouchableOpacity>
@@ -25,10 +25,10 @@ function MyStack() {
         })}
       />
       <Stack.Screen
-        name="Home"
-        component={Home}
+        name="Liste des Pokémons capturés"
+        component={CapturedPokemon}
         options={{
-          title: "Liste de mes Pokémons",
+          title: "Liste des Pokémons capturés",
         }}
       />
     </Stack.Navigator>

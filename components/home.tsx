@@ -12,11 +12,13 @@ import {
 } from "react-native";
 import { Pokemon } from "../interface/pokemon";
 import DetailsPokemon from "./modal-detail-pokemon";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Home() {
   const [pokemon, setPokemon] = useState<Pokemon[]>([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedPokemonId, setSelectedPokemonId] = useState("");
+  const [isCaptured, setIsCaptured] = useState(false);
 
   useEffect(() => {
     const fetchPokemon = async () => {
@@ -37,12 +39,29 @@ export default function Home() {
     setPokemon(data);
   };
 
+  // Check if a pokemon is captured
+  const checkIfCaptured = async (id: string) => {
+    try {
+      const capturedPokemon = await AsyncStorage.getItem('capturedPokemon');
+      if (capturedPokemon) {
+        const capturedList = JSON.parse(capturedPokemon);
+        return capturedList.some((p: Pokemon) => p.id.toString() === id);
+      }
+      return false;
+    } catch (error) {
+      console.error('Error checking if pokemon is captured', error);
+      return false;
+    }
+  };
+
   const renderPokemon = ({ item }: { item: any }) => {
     return (
       <View style={styles.container}>
         <TouchableOpacity
           key={item.id}
-          onPress={() => {
+          onPress={async () => {
+            const captured = await checkIfCaptured(item.id.toString());
+            setIsCaptured(captured);
             setModalVisible(true);
             setSelectedPokemonId(item.id.toString());
           }}
@@ -53,7 +72,6 @@ export default function Home() {
               style={styles.imgPokemon}
             />
             <Text style={styles.namePokemon}>{item.name}</Text>
-            <Image />
           </View>
         </TouchableOpacity>
       </View>
@@ -68,7 +86,47 @@ export default function Home() {
     );
   };
 
+  // Capture a pokemon
+  const savePokemon = async (pokemon: Pokemon) => {
+    try {
+      const capturedPokemon = await AsyncStorage.getItem('capturedPokemon');
+      let newCapturedPokemon = capturedPokemon ? JSON.parse(capturedPokemon) : [];
+      newCapturedPokemon.push(pokemon);
+      await AsyncStorage.setItem('capturedPokemon', JSON.stringify(newCapturedPokemon));
+    } catch (error) {
+      console.error('Error saving pokemon', error);
+    }
+  };
+
+  // Release a pokemon
+  const releasePokemon = async (pokemonId: string) => {
+    try {
+      const capturedPokemon = await AsyncStorage.getItem('capturedPokemon');
+      if (capturedPokemon) {
+        let newCapturedPokemon = JSON.parse(capturedPokemon);
+        newCapturedPokemon = newCapturedPokemon.filter((p: Pokemon) => p.id.toString() !== pokemonId);
+        await AsyncStorage.setItem('capturedPokemon', JSON.stringify(newCapturedPokemon));
+      }
+    } catch (error) {
+      console.error('Error releasing pokemon', error);
+    }
+  };
+
+  // Modal to show pokemon details
   const ModalDetailPokemon = () => {
+    const handleCaptureRelease = () => {
+      const selectedPokemon = pokemon.find(p => p.id.toString() === selectedPokemonId);
+      if (selectedPokemon) {
+        if (isCaptured) {
+          releasePokemon(selectedPokemonId);
+        } else {
+          savePokemon(selectedPokemon);
+        }
+        setIsCaptured(!isCaptured);
+        setModalVisible(!modalVisible);
+      }
+    };
+
     return (
       <View>
         {selectedPokemonId && (
@@ -88,6 +146,12 @@ export default function Home() {
                   onPress={() => setModalVisible(!modalVisible)}
                 >
                   <Text style={styles.textStyle}>Fermer</Text>
+                </Pressable>
+                <Pressable
+                  style={[styles.button, styles.buttonClose]}
+                  onPress={handleCaptureRelease}
+                >
+                  <Text style={styles.textStyle}>{isCaptured ? 'Relâcher !' : 'Capturer !'}</Text>
                 </Pressable>
               </View>
             </View>
